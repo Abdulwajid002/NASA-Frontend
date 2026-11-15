@@ -1,0 +1,154 @@
+@import "@fontsource/barlow-semi-condensed/600.css";
+@import "@fontsource-variable/instrument-sans/index.css";
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ design tokens
+   One source of truth for colour, type and spacing. Tailwind utilities are generated
+   from these (bg-petrol, text-ivory, font-display, ...), and the legacy slate/cyan
+   utilities used across the app are re-pointed at the same palette. */
+@theme {
+  --color-petrol: #142B2D;          /* dark surfaces, text on light, button text */
+  --color-petrol-deep: #0E2022;     /* recessed surfaces: sidebar, inputs */
+  --color-petrol-raised: #1A3639;   /* cards */
+  --color-ivory: #F6F0E4;           /* text on dark, reading backgrounds */
+  --color-apricot: #FFA782;         /* primary action */
+  --color-apricot-soft: #FFBDA1;
+  --color-celadon: #B6D4C4;         /* active navigation, small highlights */
+
+  --font-display: "Barlow Semi Condensed", "Arial Narrow", sans-serif;
+  --font-sans: "Instrument Sans Variable", "Instrument Sans", system-ui, sans-serif;
+
+  /* neutral scale = ivory mixed into petrol, so every grey belongs to the palette */
+  --color-slate-50: #F6F0E4;
+  --color-slate-100: #F6F0E4;
+  --color-slate-200: color-mix(in srgb, #F6F0E4 92%, #142B2D);
+  --color-slate-300: color-mix(in srgb, #F6F0E4 82%, #142B2D);
+  --color-slate-400: color-mix(in srgb, #F6F0E4 68%, #142B2D);
+  --color-slate-500: color-mix(in srgb, #F6F0E4 58%, #142B2D);
+  --color-slate-600: color-mix(in srgb, #F6F0E4 50%, #142B2D);
+  --color-slate-700: color-mix(in srgb, #F6F0E4 20%, #142B2D);
+  --color-slate-800: color-mix(in srgb, #F6F0E4 11%, #142B2D);
+  --color-slate-900: #142B2D;
+
+  /* accent = celadon */
+  --color-cyan-50: #F6F0E4;
+  --color-cyan-300: #CFE3D8;
+  --color-cyan-400: #B6D4C4;
+  --color-blue-400: #B6D4C4;
+  --color-purple-200: #F6F0E4;
+  --color-purple-300: color-mix(in srgb, #F6F0E4 86%, #142B2D);
+  --color-purple-400: color-mix(in srgb, #F6F0E4 60%, #142B2D);
+
+  /* health status: must stay distinguishable, tuned to sit with the palette */
+  --color-emerald-300: #CFE3D8;
+  --color-emerald-400: #B6D4C4;     /* nominal = celadon */
+  --color-amber-400: #F0C36B;       /* caution */
+  --color-red-300: #F6B1A8;
+  --color-red-400: #F0857A;         /* attention */
+}
+
+:root {
+  /* fluid type: mobile (390px) -> wide desktop (1440px) */
+  --fs-hero: clamp(3rem, 1.514rem + 6.095vw, 7rem);              /* 48 -> 112 */
+  --fs-section: clamp(2.25rem, 1.414rem + 3.429vw, 4.5rem);      /* 36 -> 72  */
+  --fs-sub: clamp(1.5rem, 1.314rem + 0.762vw, 2rem);             /* 24 -> 32  */
+  --fs-body: clamp(1rem, 0.930rem + 0.286vw, 1.1875rem);         /* 16 -> 19  */
+  --fs-ui: 1rem;                                                 /* 16        */
+  --fs-caption: clamp(0.8125rem, 0.789rem + 0.095vw, 0.875rem);  /* 13 -> 14  */
+
+  --gutter: 20px;
+  --space-section: clamp(4rem, 2.5rem + 6vw, 9rem);
+  --rule: color-mix(in srgb, #F6F0E4 16%, transparent);          /* fine divider on dark */
+  --rule-dark: color-mix(in srgb, #142B2D 18%, transparent);     /* fine divider on ivory */
+}
+@media (min-width: 1024px) {
+  :root { --gutter: 6vw; }
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: var(--color-petrol);
+  color: var(--color-ivory);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: 1.55;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, .font-display { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.005em; }
+button, a { -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: 2px solid var(--color-celadon); outline-offset: 3px; border-radius: 4px; }
+.on-ivory :focus-visible { outline-color: var(--color-petrol); }
+::selection { background: var(--color-apricot); color: var(--color-petrol); }
+
+/* ------------------------------------------------------------------ type roles */
+@utility t-hero { font-family: var(--font-display); font-weight: 600; font-size: var(--fs-hero); line-height: 0.98; letter-spacing: -0.012em; text-wrap: balance; }
+@utility t-section { font-family: var(--font-display); font-weight: 600; font-size: var(--fs-section); line-height: 1.0; letter-spacing: -0.01em; text-wrap: balance; }
+@utility t-sub { font-family: var(--font-display); font-weight: 600; font-size: var(--fs-sub); line-height: 1.12; }
+@utility t-body { font-size: var(--fs-body); line-height: 1.55; max-width: 60ch; }
+@utility t-ui { font-size: var(--fs-ui); line-height: 1.2; font-weight: 500; }
+@utility t-caption { font-size: var(--fs-caption); line-height: 1.4; }
+@utility t-eyebrow { font-size: var(--fs-caption); line-height: 1.4; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; }
+
+/* ------------------------------------------------------------------ layout */
+@utility gutter { padding-inline: var(--gutter); }
+@utility rule-t { border-top: 1px solid var(--rule); }
+@utility rule-b { border-bottom: 1px solid var(--rule); }
+
+/* Component classes live in the components layer so utilities (hidden, t-section, ...) can still override them. */
+@layer components {
+/* ------------------------------------------------------------------ signature detail:
+   a fine underline that extends from the left when a link is active (or hovered/focused) */
+.link-line { position: relative; display: inline-block; padding-block: 6px; font-size: var(--fs-ui); font-weight: 500; color: inherit; text-decoration: none; }
+.link-line::after {
+  content: ""; position: absolute; left: 0; bottom: 0; height: 1px; width: 100%;
+  background: currentColor; transform: scaleX(0); transform-origin: left center;
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.link-line:hover::after, .link-line:focus-visible::after { transform: scaleX(0.35); }
+.link-line[aria-current="page"], .link-line[aria-current="true"], .link-line.is-active { color: var(--color-celadon); }
+.link-line[aria-current="page"]::after, .link-line[aria-current="true"]::after, .link-line.is-active::after { transform: scaleX(1); }
+.on-ivory .link-line[aria-current="true"], .on-ivory .link-line.is-active { color: var(--color-petrol); }
+
+/* ------------------------------------------------------------------ controls */
+.btn-primary {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem;
+  min-height: 48px; padding: 0 1.5rem; border-radius: 999px; border: 0; cursor: pointer;
+  background: var(--color-apricot); color: var(--color-petrol);
+  font-size: var(--fs-ui); font-weight: 600; text-decoration: none; white-space: nowrap;
+  transition: background 200ms, transform 200ms;
+}
+.btn-primary:hover { background: var(--color-apricot-soft); transform: translateY(-1px); }
+.btn-primary:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+.btn-quiet {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem;
+  min-height: 48px; padding: 0 1.25rem; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--rule); background: transparent; color: var(--color-ivory);
+  font-size: var(--fs-ui); font-weight: 500; text-decoration: none; white-space: nowrap;
+  transition: border-color 200ms, background 200ms;
+}
+.btn-quiet:hover { border-color: var(--color-celadon); background: color-mix(in srgb, #F6F0E4 6%, transparent); }
+.btn-quiet:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* local scrim: keeps copy readable where the model passes behind it, without dimming the scene */
+.copy-scrim { position: relative; isolation: isolate; }
+.copy-scrim::before {
+  content: ""; position: absolute; z-index: -1; inset: -12% -18%;
+  background: radial-gradient(closest-side, color-mix(in srgb, #142B2D 82%, transparent), color-mix(in srgb, #142B2D 55%, transparent) 55%, transparent);
+  pointer-events: none;
+}
+}
+
+/* thin scrollbars in the app shell */
+* { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, #F6F0E4 22%, transparent) transparent; }
